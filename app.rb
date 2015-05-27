@@ -18,8 +18,14 @@ end
 
 post '/index' do
   sql = "insert into videos (title, description, url, genre) values ('#{params['title']}', '#{params['description']}', '#{params['url']}', '#{params['genre']}')"
+  binding.pry
   run_sql(sql)
   redirect to('index')
+end
+
+get '/index' do
+ sql =  "select * from videos"
+ @videos = run_sql(sql)
 end
 
 
