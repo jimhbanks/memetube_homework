@@ -4,11 +4,12 @@ require 'pg'
 require 'pry-byebug'
 
 get '/' do
-  redirect to('/index')
+  redirect to('/videos')
 end
 
 get '/index' do
-
+  sql = "select * from videos"
+  @videos = run_sql(sql)
   erb :index
 end
 
@@ -16,29 +17,27 @@ get '/videos/new' do
   erb :new
 end
 
-post '/index' do
+post '/videos' do
   sql = "insert into videos (title, description, url, genre) values ('#{params['title']}', '#{params['description']}', '#{params['url']}', '#{params['genre']}')"
-  binding.pry
   run_sql(sql)
-  redirect to('index')
+  redirect to('/videos')
 end
 
-get '/index' do
- sql =  "select * from videos"
- @videos = run_sql(sql)
+get '/videos/:id' do
+ sql =  "select * from videos where id =#{params[:id]}"
+ @videos = run_sql(sql).first
+ 
+ erb :show
 end
 
-
-
-
-def run_sql(sql)
-  conn = PG.connect(dbname: 'radtube', host: 'localhost')
-  begin
-    result = conn.exec(sql)
-  ensure
-    conn.close
-  end
-  result
-end
+# def run_sql(sql)
+#   conn = PG.connect(dbname: 'radtube', host: 'localhost')
+#   begin
+#     result = conn.exec(sql)
+#   ensure
+#     conn.close
+#   end
+#   result
+# end
 
 
